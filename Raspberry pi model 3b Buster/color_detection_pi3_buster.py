@@ -1,3 +1,6 @@
+#standard picamera
+#raspberrypi model 3b running buster
+
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
@@ -13,6 +16,7 @@ def get_color_threshold(color):
         return (0, 0, 200), (255, 30, 255)
     else:
         raise ValueError('Invalid color')
+#hsv colors
 
 camera = PiCamera()
 camera.resolution = (640, 480)
@@ -38,7 +42,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area > 100:  # Filter out small areas to remove noise
+        if area > 100:  # filter out small areas to remove noise
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(image, (x, y), (x + w, y + h), (255, 51, 51), 2)
             cv2.line(image, (round((x + x + w) / 2), 0), (round((x + x + w) / 2), 480), (0, 153, 51), 2)
@@ -48,6 +52,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 print("2")
             if round((x + x + w) / 2) >= 426:
                 print("3")
+            #print relative position
 
     cv2.imshow("Frame", image)
     key = cv2.waitKey(1) & 0xFF
@@ -57,7 +62,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     elif key == ord("g"):
         color = 'green'
         lower, upper = get_color_threshold(color)
-
+    #example on how to switch filter
     rawCapture.truncate(0)
 
 cv2.destroyAllWindows()
