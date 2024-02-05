@@ -1,3 +1,7 @@
+# Virtual env required, must have local file access
+# python3 -m venv --system-site-packages (env name)
+# Must install both opencv and mediapipe
+# On bullseye no camera init required
 from picamera2 import Picamera2
 import cv2
 import numpy as np
@@ -30,6 +34,7 @@ while True:
             h, w, _ = frame.shape
 
             # Count fingers based on the position of the tips, excluding the thumb
+            # Will follow with thumb counting logic
             fingers_up = [landmarks[i].y < landmarks[i - 1].y for i in [8, 12, 16, 20]]
 
             # Display the count at the top corner of the screen
