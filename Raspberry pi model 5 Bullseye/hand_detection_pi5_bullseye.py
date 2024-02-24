@@ -15,15 +15,21 @@ mp_hands = mp.solutions.hands
 hands = mp_hands.Hands()
 
 picam2 = Picamera2()
-picam2.sensor_resolution = (205, 154)  # Set the camera resolution
-picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (820, 616)}))
+picam2.sensor_resolution = (2304, 1296)  # Set the camera resolution
+picam2.configure(picam2.create_preview_configuration(main={"format": 'XRGB8888', "size": (2304, 1296)}))
 picam2.start()
+
+# Set the desired processing resolution (keeping the original resolution)
+processing_resolution = (picam2.sensor_resolution[0] // 4, picam2.sensor_resolution[1] // 4)
 
 while True:
     frame = picam2.capture_array()
 
-    # Convert the frame to RGB for MediaPipe Hands
-    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    # Resize the frame by averaging 4x4 blocks of pixels
+    resized_frame = cv2.resize(frame, processing_resolution, interpolation=cv2.INTER_AREA)
+
+    # Convert the resized frame to RGB for MediaPipe Hands
+    rgb_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2RGB)
 
     # Process the frame with MediaPipe Hands
     results = hands.process(rgb_frame)
@@ -37,9 +43,9 @@ while True:
             # Count fingers based on the position of the tips, excluding the thumb
             fingers_up = [landmarks[i].y < landmarks[i - 1].y for i in [8, 12, 16, 20]]
 
-            # Display the count at the top corner of the screen
+            # Display the count at the top-left corner of the screen
             count = fingers_up.count(True)
-            cv2.putText(frame, f"Fingers: {count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 255), 2, cv2.LINE_AA)
+            cv2.putText(frame, f"Fingers: {count}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 255), 3, cv2.LINE_AA)
 
             # Display green dots at the fingertips
             for i in range(0, 21):
@@ -64,4 +70,5 @@ while True:
 # Release resources
 cv2.destroyAllWindows()
 picam2.stop()
+
 
