@@ -46,8 +46,8 @@ while True:
 
             # Connect all landmarks with purple lines, excluding specific pairs
             for i in range(1, len(landmarks)):
-                if (i-1, i) not in [(8, 9), (12, 13), (16, 17)] and (i, i-1) not in [(8, 9), (12, 13), (15, 17)]:
-                    if (i-1, i) not in [(4, 5), (8, 9), (12, 13), (16, 17)] and (i, i-1) not in [(4, 5), (8, 9), (12, 13), (15, 17)]:
+                if (i-1, i) not in [(8, 9), (12, 13), (16, 17)] and (i, i-1) not in [(8, 9), (12, 13), (15, 17)]: # Manually filter setpoints and connections to avid cluster
+                    if (i-1, i) not in [(4, 5), (8, 9), (12, 13), (16, 17)] and (i, i-1) not in [(4, 5), (8, 9), (12, 13), (15, 17)]: # Manually filter setpoints and connections to avid cluster
                         x1, y1 = int(landmarks[i - 1].x * w), int(landmarks[i - 1].y * h)
                         x2, y2 = int(landmarks[i].x * w), int(landmarks[i].y * h)
                         cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 255), 2)
